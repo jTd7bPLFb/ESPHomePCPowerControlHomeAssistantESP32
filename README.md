@@ -1,4 +1,4 @@
-# ESPHome PC Power Control via Home Assistant
+# ESPHome PC Power Control via Home Assistant esp32 wroom
 
 This project contains remote PC power control via HomeAssistant and ESPHome ESP8266/ESP32 boards.
 
