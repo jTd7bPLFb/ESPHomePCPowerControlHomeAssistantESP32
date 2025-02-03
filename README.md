@@ -51,6 +51,7 @@ My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains stan
 
 ![Schematic](images/Schematic.png)
 ![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
+![Schematic](images/esp32-wrover-board-simplified-pinout.png)
 
 **ATX header USB 2.0:**
 
