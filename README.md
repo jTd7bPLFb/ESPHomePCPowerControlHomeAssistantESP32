@@ -53,6 +53,10 @@ My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains stan
 ![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
 ![Schematic](images/esp32-wrover-board-simplified-pinout.png)
 
+**ATX power from 20/24 pin ATX connector from PSU:**
+As some (mostly itx) new mainboards do not include the USB 2.0 header on board anymore, I am using the +5vSB (purple)and GND connectors to poser esp32 using spliced micro-usb connector.
+![ATX pin out from 20/24 pin ATX connector from PSU:](images/atx-pinout-pc.png)
+
 **ATX header USB 2.0:**
 
 Header `J1` pin 1 constant +5V power on pin 1, even when the PC is power-off and is used to power the NodeMCU. The ESP8266 or ESP32 is powered via an on-board 3V3 regulator.
