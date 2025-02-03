@@ -54,7 +54,11 @@ My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains stan
 ![Schematic](images/esp32-wrover-board-simplified-pinout.png)
 
 **ATX power from 20/24 pin ATX connector from PSU:**
+
 As some (mostly itx) new mainboards do not include the USB 2.0 header on board anymore, I am using the +5vSB (purple)and GND connectors to poser esp32 using spliced micro-usb connector.
+
+## ATX 20/24 pin out
+
 ![ATX pin out from 20/24 pin ATX connector from PSU:](images/atx-pinout-pc.png)
 
 **ATX header USB 2.0:**
