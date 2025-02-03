@@ -50,6 +50,7 @@ The hardware consists of an ESP8266 or ESP32 and two IO pins, mounted on a PCI m
 My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains standard 2.5mm 2x5 male headers:
 
 ![Schematic](images/Schematic.png)
+![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
 
 **ATX header USB 2.0:**
 
