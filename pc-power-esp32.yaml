@@ -1,0 +1,74 @@
+esphome:
+  name: pc-power
+  friendly_name: pc-power
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "kljdunwouscdnolsdiuy32lkjsadnw="
+
+ota:
+  - platform: esphome
+    password: "8sa7234687asdnkljxjhkavdlzcasd17"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Pc-Power Fallback Hotspot"
+    password: "mj39037mNhszkw"
+
+captive_portal:
+
+binary_sensor:
+- platform: gpio
+  name: "PC Power State"
+  icon: "mdi:power"
+  device_class: power
+  pin:
+    number: GPIO14   # Power detect input pin (readback from Reset button)
+    inverted: False
+    mode:
+      input: True
+      pullup: True
+
+switch:
+- platform: gpio
+  id: power_short_press
+  name: "PC Power Toggle"
+  icon: "mdi:electric-switch"
+  interlock: [power_long_press]
+  pin:
+    number: GPIO4   # Power button output pin
+    inverted: False
+    allow_other_uses: true
+    mode:
+      output: true
+  on_turn_on:
+  - delay: 150ms
+  - switch.turn_off: power_short_press
+
+- platform: gpio
+  id: power_long_press
+  name: "PC HARD POWER OFF"
+  icon: "mdi:electric-switch"
+  interlock: [power_short_press]
+  pin:
+    number: GPIO4   # Power button output pin
+    inverted: False
+    allow_other_uses: true
+    mode:
+      output: true
+  on_turn_on:
+  - delay: 3500ms
+  - switch.turn_off: power_long_press
