@@ -16,7 +16,7 @@ I use this project to power my PC based NAS remotely on and off via Home Assista
 * User authorization via Homeassistant.
 * Use with any (micro/mini)-ATX computer motherboard.
 
-Youtube video:
+Original idea Youtube video:
 
 [![Youtube video](https://img.youtube.com/vi/rAcvqaPf830/0.jpg)](https://www.youtube.com/watch?v=rAcvqaPf830)
 
@@ -38,26 +38,17 @@ Homeassistant screenshot:
 
 ## Hardware
 
-The hardware consists of an ESP8266 or ESP32 and two IO pins, mounted on a PCI metal plate (see picture below). In my case I used an ESP8266 NodeMCU board. Theoretically any ESP8266 or ESP32 board can be used for this project.
-
+The hardware consists ESP32 and two IO pins.
 * One pin controls the power button by generating a long or short press
 * A second pin reads the motherboard power status.
 
-![Hardware](images/NodeMCU.jpg)
-
 ## Schematic
-
-My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains standard 2.5mm 2x5 male headers:
-
-**Original Schematics**
-
-![Schematic](images/Schematic.png)
 
 **ESP32 Information**
 
 ![Schematic](images/esp32-wrover-board-simplified-pinout.png)
 
-You can use 2N2222 Transistor and 1k resistors istead.
+**2N2222 Transistor pin out**
 
 ![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
 
@@ -80,47 +71,21 @@ Many new mainboards do not include the USB 2.0 header on board anymore.
 
 **ATX header USB 2.0:**
 
-Header `J1` pin 1 constant +5V power on pin 1, even when the PC is power-off and is used to power the NodeMCU. The ESP8266 or ESP32 is powered via an on-board 3V3 regulator.
+Alternatively, you can use Header `J1` pin 1 constant +5V power on pin 1, even when the PC is power-off.
 
-**ATX header System panel: - Limited Header**
-
-Some new PC cases do not provide full F_PANEL header. Only the reset ahd power led are populated (the top row). This is why I had to use the Power Led pin to sense PC state (on or off).
-
-**ATX header System panel - Full Header:**
+**ATX header F_PANEL System panel:**
 
 Header `J2` contains the power, reset and GND pins:
 
+Some new PC cases do not provide full F_PANEL header. Only the reset and power led are populated (the top row). 
+This is why I had to use the Power Led pin to sense PC status (on or off).
 * Power button pin 6.
   * Short press: Turn PC on or generate graceful shutdown.
   * Long press: Generate hard power off.
-* Reset button pin 7.
+* PLED pin 2, to read status
   * Used to read power status via the reset button pin:
-    * High: power-on
-    * Low: power-off
-* GND pin 5.
-
-* Pin `D1` is used to read the power status from the reset pin: High is on, Low is off. Resistor `R1` is used to minimize current when the IO pin is accidentally set to output.
-* Pin `D2` is used to pull the power button low to generate a short or long press. Transistor `Q1` is used for secure isolation between ESP8266 and motherboard.
-
-Warning: All ATX and ESP pins must be operating at 3V3.
-
-## Downloads
-
-* [KiCad schematic .SCH](kicad/ESP8266-ESPHome-PC-Power-HomeAssistant.pro)
-
-## Wiring
-
-![Wiring](images/Wiring.jpg)
-
-A DIY breakout PCB can be mounted at the system panel header to connect power button `SW1` and reset button `SW2`.
-
-## WiFi stability
-
-There is sufficient space in an ATX computer case to mount the ESP board. However, the computer case is metal shielded, so the WiFi distance to the base station reduces. It is recommended to place the ESP outside the computer case when the WiFi connection is unstable or distance too low. An ESP32 may result in different WiFi connection stability, but overall it depends on the environment.
-
-ESP8266 PCB mounted at the back of the PC case:
-
-![ESP PC mount](images/ESPMount.jpg)
+   * High: power-on
+   * Low: power-off
 
 ## Software updates
 
@@ -140,57 +105,16 @@ Documentation:
 ### Project configuration
 
 Configure the following files:
-
-- [pc-power.yaml](https://github.com/Erriez/ESPHomePCPowerControlHomeAssistant/blob/master/pc-power.yaml): Configure `platform` and `board`.
-- [secrets.yaml](https://github.com/Erriez/ESPHomePCPowerControlHomeAssistant/blob/master/secrets.yaml): Configure WiFi SSID and passwords
-  
+- [secrets.yaml](https://github.com/Erriez/ESPHomePCPowerControlHomeAssistant/blob/master/secrets.yaml): Configure WiFi SSID and passwords  
 - [pc-power-esp32.yaml](https://github.com/jTd7bPLFb/ESPHomePCPowerControlHomeAssistantESP32/blob/master/pc-power-esp32.yaml): Configure ESP32 ESPHome
 
 Please refer to [ESPHome documentation](https://esphome.io/components/esphome.html) for more information about ESPHome YAML configuration.
 
 
-### Program ESP8266 or ESP32
+### Program ESP32
 
-Connect USB cable to ESP8266 or ESP32 board and enter the following commands. (Examples are tested on Ubuntu). For more information, refer to [ESPHome.io](https://esphome.io/guides/getting_started_command_line.html).
+Follow ESPHome Home Assistant integration instructions to program the ESP32 board.
 
-```bash
-# Clone this repository
-$ git clone git@github.com:Erriez/ESPHomePCPowerControlHomeAssistant.git
-
-# Install Python3 virtualenv
-$ sudo apt install python3-virtualenv
-
-# Create virtualenv
-$ virtualenv venv
-
-# Activate virtualenv
-$ source venv/bin/activate
-
-# Install ESPHome
-$ pip install esphome
-
-# Optional: Install platformio updates
-$ platformio platform update
-$ platformio upgrade
-
-# Optional: Add user permission serial port
-$ sudo usermod -a -G dialout <USERNAME>
-$ sudo reboot now
-
-# Check ESPHome installation
-$ esphome --help
-
-# Optional: Compile program without upload
-$ esphome compile pc-power.yaml
-
-# Upload program to ESP8266 or ESP32
-$ esphome run pc-power.yaml
-
-# Select serial port or WiFi to upload application
-
-# Check logs
-$ esphome logs pc-power.yaml
-```
 
 ## Home Assistant configuration
 
@@ -199,42 +123,44 @@ This section describes Home Assistant configuration.
 ### Register ESP device
 
 * `Configuration | Integrations: Add Integration: ESPHome`
-* Select hostname or IP address of the ESP device.
-* Enter password as configured in `secrets.yml` | `esphome_api_password`.
+* Home Assistant should detect new ESPHome device automatically. Just follow the instructions.
+* Alternativelly, you can add the device 'by hand'
+  * Select hostname or IP address of the ESP device.
+  * Enter password as configured in `secrets.yml` | `esphome_api_password`.
 
 ### Homeassistant | Edit Dashboard | RAW Configuration Editor
 
 Add PC power integration to a dashboard via raw edit:
 
 ```yaml
-title: Home
-views:
-  - title: PC
-    path: pc
-    badges: []
-    cards:
-      - type: button
-        entity: switch.pc_power_toggle
-        show_name: true
-      - type: button
-        tap_action:
-          action: none
-        entity: binary_sensor.pc_power_state
-        hold_action:
-          action: none
-      - type: button
-        tap_action:
-          action: toggle
-        entity: switch.pc_hard_power_off
-        icon_height: 40px
-        show_state: false
-        show_name: true
-        show_icon: true
+type: grid
+cards:
+  - type: heading
+    heading_style: title
+    heading: Gaming PC
+  - type: tile
+    entity: binary_sensor.pc_power_pc_power_state
+    name: PC status
+    show_entity_picture: true
+    vertical: false
+    hide_state: true
+  - type: tile
+    entity: switch.pc_power_pc_power_toggle
+    name: Power Button
+  - type: tile
+    entity: switch.pc_power_pc_hard_power_off
+    name: Power Long Press
+column_span: 1
 ```
 
 ## Version history
 
-Restart Home Assistant and ready to go!
+### Update 05. February 2025
+
+Forked the original project.
+Updated to use PLED+ to detect status of PC.
+Updated schematics to ESP32 wiring.
+Updated Home Assistant Dashboard to use the new Grid type.
 
 ### Update 11 October 2024
 
