@@ -49,13 +49,30 @@ The hardware consists of an ESP8266 or ESP32 and two IO pins, mounted on a PCI m
 
 My NAS is based on an Intel Core I7 ASRock Z97 ATX motherboard and contains standard 2.5mm 2x5 male headers:
 
+**Original Schematics**
+
 ![Schematic](images/Schematic.png)
-![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
+
+**ESP32 Information**
+
 ![Schematic](images/esp32-wrover-board-simplified-pinout.png)
+
+You can use 2N2222 Transistor and 1k resistors istead.
+
+![Schematic](images/2n2222-npn-transistor-pinout-diagram.jpg)
+
+**ESP32 Schematics**
+
+Power is provided using USB-A to miniUSB cable routed from one of the outside USB ports to the inside of the case.
+Most mainboards have USB always on nowadays to support wake on keyboard/mouse.
+
+![Schematic](images/esp32-pc-remote.png)
 
 **ATX power from 20/24 pin ATX connector from PSU:**
 
-As some (mostly itx) new mainboards do not include the USB 2.0 header on board anymore, I am using the +5vSB (purple)and GND connectors to poser esp32 using spliced micro-usb connector.
+You can also use +5vSB from ATX mainboard connector, if  you want to. 
+Or, as in the original project, the USB 2.0 mainboard header.
+Many new mainboards do not include the USB 2.0 header on board anymore.
 
 ## ATX 20/24 pin out
 
@@ -65,7 +82,11 @@ As some (mostly itx) new mainboards do not include the USB 2.0 header on board a
 
 Header `J1` pin 1 constant +5V power on pin 1, even when the PC is power-off and is used to power the NodeMCU. The ESP8266 or ESP32 is powered via an on-board 3V3 regulator.
 
-**ATX header System panel:**
+**ATX header System panel: - Limited Header**
+
+Some new PC cases do not provide full F_PANEL header. Only the reset ahd power led are populated (the top row). This is why I had to use the Power Led pin to sense PC state (on or off).
+
+**ATX header System panel - Full Header:**
 
 Header `J2` contains the power, reset and GND pins:
 
@@ -119,8 +140,11 @@ Documentation:
 ### Project configuration
 
 Configure the following files:
+
 - [pc-power.yaml](https://github.com/Erriez/ESPHomePCPowerControlHomeAssistant/blob/master/pc-power.yaml): Configure `platform` and `board`.
 - [secrets.yaml](https://github.com/Erriez/ESPHomePCPowerControlHomeAssistant/blob/master/secrets.yaml): Configure WiFi SSID and passwords
+  
+- [pc-power-esp32.yaml](https://github.com/jTd7bPLFb/ESPHomePCPowerControlHomeAssistantESP32/blob/master/pc-power-esp32.yaml): Configure ESP32 ESPHome
 
 Please refer to [ESPHome documentation](https://esphome.io/components/esphome.html) for more information about ESPHome YAML configuration.
 
