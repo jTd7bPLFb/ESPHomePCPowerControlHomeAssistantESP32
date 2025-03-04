@@ -41,6 +41,8 @@ Homeassistant screenshot:
 The hardware consists ESP32 and two IO pins.
 * One pin controls the power button by generating a long or short press
 * A second pin reads the motherboard power status.
+* Make sure that you connect to either the PLED+ or PLED-, which ever works for you.\
+  Don't forget to change the software accordingly.
 
 ## Schematic
 
